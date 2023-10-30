@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-# Fabeic file to create and distribute an archive to a web server.
+# Fabfile to create and distribute an archive to a web server . $
 import os.path
 from datetime import datetime
 from fabric.api import env
@@ -7,7 +7,7 @@ from fabric.api import local
 from fabric.api import put
 from fabric.api import run
 
-env.hosts = ["54.237.80.101", "100.26.121.175"]
+env.hosts = ["54.157.145.62", "54.157.138.182"]
 
 
 def do_pack():

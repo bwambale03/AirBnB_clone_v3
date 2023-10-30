@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-"""This generates a .tgz archive from the contents of the web_static folder."""
+"""This generates a .tgz archive from the contents of the web_static folder.
+"""
 from fabric.api import local
 import time
 
@@ -12,5 +13,6 @@ def do_pack():
               format(time.strftime("%Y%m%d%H%M%S")))
         return ("versions/web_static_{}.tgz".format(time.
                                                     strftime("%Y%m%d%H%M%S")))
-    except:
+    except Exception as e:
+        print(f"An error occurred: {e}")
         return None

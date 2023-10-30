@@ -4,10 +4,10 @@ Fabric script that distributes an archive to your web servers
 """
 
 from datetime import datetime
-from fabric.api import *
+from fabric.api import local, put, run, env
 import os
 
-env.hosts = ["54.237.80.101", "100.26.121.175"]
+env.hosts = ["54.157.145.62", "54.157.138.182"]
 env.user = "ubuntu"
 
 
@@ -31,22 +31,30 @@ def do_deploy(archive_path):
     """
         Distribute archive.
     """
+    print(f"Checking if {archive_path} exists...")
     if os.path.exists(archive_path):
+        print(f"{archive_path} exists. Proceeding with deployment...")
+
         archived_file = archive_path[9:]
         newest_version = "/data/web_static/releases/" + archived_file[:-4]
         archived_file = "/tmp/" + archived_file
         put(archive_path, "/tmp/")
         run("sudo mkdir -p {}".format(newest_version))
-        run("sudo tar -xzf {} -C {}/".format(archived_file,
-                                             newest_version))
+        run("sudo tar -xzf {} -C {}/".format(archived_file, newest_version))
         run("sudo rm {}".format(archived_file))
-        run("sudo mv {}/web_static/* {}".format(newest_version,
-                                                newest_version))
-        run("sudo rm -rf {}/web_static".format(newest_version))
+        # move contents of sub-drectories individually
+        subdirectories = ['images', 'styles']
+        for subdir in subdirectories:
+            run("sudo mv {}/web_static/{}/ {} || "
+                "true ".format(newest_version, subdir, newest_version))
+
+        run("sudo rm -rf {}/web_static/*".format(newest_version))
         run("sudo rm -rf /data/web_static/current")
         run("sudo ln -s {} /data/web_static/current".format(newest_version))
 
         print("New version deployed!")
         return True
 
-    return False
+    else:
+        print(f"{archive_path} does not exist. Deployment failed.")
+        return False
