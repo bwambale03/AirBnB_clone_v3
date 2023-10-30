@@ -52,6 +52,13 @@ def global_error_handler(err):
         message = {'error': err}
         code = 500
     return make_response(jsonify(message), code)
+@app_views.route('/api/v1/states', methods=['GET'], strict_slashes=False)
+def get_states():
+    # Your implementation to retrieve and return states goes here
+    # This could involve querying the database, formatting the data, and returning it as JSON
+    states = storage.all(State).values()
+    state_list = [state.to_dict() for state in states]
+    return jsonify({"message": "This is a placeholder response for get_states"})
 
 
 def setup_global_errors():
